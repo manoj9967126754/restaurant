@@ -1,0 +1,9 @@
+{
+    "HOSTING_PORT": 7000,
+    "DATABASE":{
+        "DB_NAME":"restaurantDB",
+        "DB_USER":"restaurant",
+        "DB_PASS":"Test@123",
+        "DIALECT": "mysql"
+    }
+}
