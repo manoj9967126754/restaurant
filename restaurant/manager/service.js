@@ -56,9 +56,9 @@ var ManagerService = {
             let request = req.body;
             request.Restaurant_id = req.params.id;
             let resp = await db.gatRestro_ById(request);
-            return res.status(200).json([resp]);
+            return resp;
         } catch (err) {
-            res.status(201).send([{ msg: "NO Restraurant Available" }])
+            res.status(500).send([{ msg: "NO Restraurant Available" }])
             console.log("error in allRestaurant_ById service", err);
         }
         return resp;
@@ -75,7 +75,7 @@ var ManagerService = {
             obj.cusineTypes = JSON.stringify(req.body.cusinetypes);
             obj.isOpen = req.body.isopen ? 1 : 0;
             console.log(obj);
-            await db.postData_restro({
+            let resp = await db.postData_restro({
                 Restaurant_id: obj.Restaurant_id,
                 Restaurant_name: obj.Restaurant_name,
                 Address: obj.Address,
@@ -83,8 +83,11 @@ var ManagerService = {
                 Cost: obj.Cost,
                 cusineTypes: obj.cusineTypes,
                 isOpen: obj.isOpen
-            }).then(() => res.status(200).json(obj)).catch((err) => res.status(201).send(err));
+            }).then(() => res.status(200).json([obj])).catch((err) => res.status(201).send(err));
+            return resp;
+            //then(() => res.status(200).json(obj)).catch((err) => res.status(201).send(err));
         } catch (error) {
+            res.status(500).send(err);
             console.log("error in addRestaurant service", error);
         }
     },
@@ -94,7 +97,7 @@ var ManagerService = {
             let request = req.body;
             request.Restaurant_id = req.params.id;
             let resp = await db.updateRestro(request);
-            return res.json([resp]);
+            return resp;
         } catch (error) {
             console.log("error in updateRestaurant service", error);
         }
@@ -103,9 +106,9 @@ var ManagerService = {
     deleteRestaurant: async function (req, res) {
         try {
             let request = req.body;
-            request.Restaurant_id = req.params.id ;
+            request.Restaurant_id = req.params.id;
             let resp = await db.deleteRestro(request)
-            return res.json([resp]);
+            return resp;
         } catch (error) {
             console.log("error in deleteRestaurant service", error);
         }

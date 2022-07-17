@@ -34,11 +34,14 @@ var ManagerController = {
 
         try {
             let resp = {};
-            // console.log(req.params, req.params.id);
             if (req.params.id) {
-                resp = await service.allRestaurant_ById(req, res)
+                resp = await service.allRestaurant_ById(req, res);
+                return res.status(200).json([resp]);
+            } else {
+                resp = { msg: "Please Enter Correct Restaurant_Id" };
+                return res.status(201).json([resp]);
             }
-            return resp;
+
         } catch (ex) {
             console.log(ex);
             res.status(500).json(ex);
@@ -47,10 +50,9 @@ var ManagerController = {
     addRestaurant: async function (req, res) {
 
         try {
-
-            let resp = await service.addRestaurant(req, res);
-            return resp;
-
+            let resp = {};
+            resp = await service.addRestaurant(req, res);
+            return res;
         } catch (ex) {
             console.log(ex);
             res.status(500).json(ex);
@@ -71,22 +73,30 @@ var ManagerController = {
             let resp = {};
             if (req.params.id) {
                 resp = await service.updateRestaurant(req, res);
+                return res.status(200).json([resp]);
+            } else {
+                resp = { msg: "Please Enter Correct Restaurant_Id" };
+                return res.status(201).json([resp]);
             }
-            console.log(resp);
-            return resp;
-        } catch (error) {
-            console.log(error);
+            // console.log(resp);
+        } catch (ex) {
+            console.log(ex);
+            res.status(500).json(ex);
         }
     },
     deleteRestaurant: async function (req, res) {
         try {
             let resp = {};
-            if (req.params.id) { 
+            if (req.params.id) {
                 resp = await service.deleteRestaurant(req, res);
-             }
-            return resp;
+                return res.status(200).json([resp]);
+            } else {
+                resp = { msg: "Please Enter Correct Restaurant_Id" };
+                return res.status(201).json([resp]);
+            };
         } catch (error) {
             console.log(error);
+            res.status(500).json(error);
         }
     }
 }

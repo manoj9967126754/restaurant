@@ -30,7 +30,7 @@ module.exports.dbcheck = async function () {
 }
 
 
-// module.exports.table =  function () {
+
 const restro_table = sequelize.define('restro_table', {
     Restaurant_id: {
         type: Sequelize.UUID,
@@ -48,8 +48,7 @@ const restro_table = sequelize.define('restro_table', {
 });
 
 restro_table.sync({ force: false });
-// }
-// module.exports = restro_table;
+
 
 module.exports.postData_restro = async function (obj) {
     try {
@@ -163,7 +162,7 @@ module.exports.updateRestro = async function (val) {
 
 module.exports.deleteRestro = async function (val) {
     return await restro_table.destroy({ where: { Restaurant_id: val.Restaurant_id } }).then(result => {
-        // console.log(result);
+        console.log(result);
         if (result && result === 1) {
             return { msg: "Data Deleted Successfully" }
         } else {
