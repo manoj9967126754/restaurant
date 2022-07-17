@@ -72,6 +72,7 @@ var ManagerController = {
             if (req.params.id) {
                 resp = await service.updateRestaurant(req, res);
             }
+            console.log(resp);
             return resp;
         } catch (error) {
             console.log(error);

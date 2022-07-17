@@ -36,7 +36,6 @@ var ManagerService = {
                         resp = await ManagerService.getCusineTpe(req, val, resp, [])
                     }
                 } else if (queryArr.includes("cusinetypes")) {
-                    console.log("aaya cusinetypes", val);
                     resp = await db.getAllVeg_Lowfare_restro(val);
                     if (req.query.cusinetypes && req.query.cusinetypes.length) {
                         resp = await ManagerService.getCusineTpe(req, val, resp, [])
@@ -56,7 +55,6 @@ var ManagerService = {
         try {
             let request = req.body;
             request.Restaurant_id = req.params.id;
-            console.log(request);
             let resp = await db.gatRestro_ById(request);
             return res.status(200).json([resp]);
         } catch (err) {
@@ -95,24 +93,19 @@ var ManagerService = {
         try {
             let request = req.body;
             request.Restaurant_id = req.params.id;
-            console.log(request);
-            let resp = await db.updateRestro(request)
-            return resp;
+            let resp = await db.updateRestro(request);
+            return res.json([resp]);
         } catch (error) {
             console.log("error in updateRestaurant service", error);
         }
-        request.Restaurant_id = req.params.id;
-        console.log(request);
-        let resp = await db.updateRestro(request)
     },
 
     deleteRestaurant: async function (req, res) {
         try {
             let request = req.body;
-            request.Restaurant_id = req.params.id || "";
-            console.log(request);
+            request.Restaurant_id = req.params.id ;
             let resp = await db.deleteRestro(request)
-            return resp;
+            return res.json([resp]);
         } catch (error) {
             console.log("error in deleteRestaurant service", error);
         }
@@ -156,31 +149,44 @@ var ManagerService = {
             val.operator = "AND";
             val.cusineTypes = req.query.cusinetypes
         } else {
-           
+
             val.cusineTypes = [req.query.cusinetypes]
         }
         // console.log(val.cusineTypes)
         if (val.cusineTypes && val.cusineTypes.length) {
             let count = 0;
-            val.cusineTypes.forEach((elem) => {
-                if (response && response.length)
+            if (val.operator == "AND") {
+                if (response && response.length) {
                     response.forEach((res, r) => {
-                        console.log("cusineTypes_out" + r, JSON.parse(res.cusineTypes));
-                        if (val.operator == "AND" && !resp.includes(res)) {
-                            let cusinetypes = JSON.parse(res.cusineTypes)
-                            // for (let index = 0; index < cusinetypes.length; index++) {
-                            if (cusinetypes.includes(elem)) count++;
+                        val.cusineTypes.forEach(elem => {
+
+                            if (!resp.includes(res)) {
+                                let cusinetypes = JSON.parse(res.cusineTypes);
+                                if (cusinetypes.includes(elem)) count++;
+                            }
                             if (count == val.cusineTypes.length) {
                                 console.log("count----------------->", count);
                                 resp.push(res);
                                 count = 0
-                            };
-                        } else if (JSON.parse(res.cusineTypes).includes(elem) && !resp.includes(res)) {
-                            // console.log("cusineTypes_" + r, JSON.parse(res.cusineTypes));
-                            resp.push(res)
-                        }
+                            } else if (val.cusineTypes.length - 1 == r) {
+                                count = 0
+                            }
+                        })
                     })
-            })
+                }
+            } else {
+                val.cusineTypes.forEach((elem) => {
+                    if (response && response.length) {
+                        response.forEach((res, r) => {
+                            console.log("cusineTypes_out" + r, JSON.parse(res.cusineTypes));
+                            if (JSON.parse(res.cusineTypes).includes(elem) && !resp.includes(res)) {
+                                // console.log("cusineTypes_" + r, JSON.parse(res.cusineTypes));
+                                resp.push(res)
+                            }
+                        })
+                    }
+                })
+            }
         };
 
         console.log(resp.length);

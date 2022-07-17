@@ -148,8 +148,8 @@ module.exports.updateRestro = async function (val) {
         obj.isOpen = val.isopen ? 1 : 0;
     }
     let response = await restro_table.update(obj, { where: { Restaurant_id: val.Restaurant_id } }).then((result, err) => {
-
-        if (result && result[0] == 1) {
+        console.log("updation", result);
+        if (result && result[0] === 1) {
             return { msg: "Data Updated Successfully" }
         } else {
             return { msg: "Data Updatation Unsuccessful" }
@@ -164,10 +164,13 @@ module.exports.updateRestro = async function (val) {
 module.exports.deleteRestro = async function (val) {
     return await restro_table.destroy({ where: { Restaurant_id: val.Restaurant_id } }).then(result => {
         // console.log(result);
-        if (result && result == 1) {
+        if (result && result === 1) {
             return { msg: "Data Deleted Successfully" }
         } else {
-            return { msg: "Data Deleted Unsuccessfull" }
+            return { msg: "Data Not Deleted Successfully" }
         }
+    }).catch((err) => {
+        console.log("error in delete retaurant DB", err);
+        return { msg: "Data Not Deleted Successfully" }
     })
 }
