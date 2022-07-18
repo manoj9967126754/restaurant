@@ -12,7 +12,8 @@
 **/
 const Sequelize = require('sequelize');
 const { Op } = require('sequelize');
-const config = require("./config.json")
+const config = require("./config.json");
+const uuid = require('uuid');
 const sequelize = new Sequelize(config.DATABASE.DB_NAME, config.DATABASE.DB_USER, config.DATABASE.DB_PASS, {
     dialect: config.DATABASE.DIALECT
 });
@@ -23,7 +24,7 @@ module.exports.dbcheck = async function () {
             console.log("Database connected sucessfully");
             resolve(true);
         }).catch((err) => {
-            console.log(err, "this is error in database connection");
+            console.log(err, " error in database connection");
             reject(er);
         })
     })
@@ -47,8 +48,125 @@ const restro_table = sequelize.define('restro_table', {
     tableName: 'restro_table'
 });
 
-restro_table.sync({ force: false });
+restro_table.sync({ force: false }).then(()=>initial());//initial() use only for 1st for raw data entry in db
 
+async function initial() {
+    let rawdata = [
+        {
+            "Restaurant_id": uuid.v1(),
+            "Restaurant_name": "Hotel MK Regency",
+            "Address": "Andheri",
+            "vegOnly": true,
+            "Cost": "low",
+            "cusineTypes": '["italian"]',
+            "isOpen": false
+        },
+        {
+            "Restaurant_id": uuid.v1(),
+            "Restaurant_name": "Hotel Kashmir",
+            "Address": "Dadar",
+            "vegOnly": true,
+            "Cost": "low",
+            "cusineTypes": '["italian","panjabi","kashmiri","french"]',
+            "isOpen": true
+        },
+        {
+            "Restaurant_id": uuid.v1(),
+            "Restaurant_name": "Hotel The Mela",
+            "Address": "Powai",
+            "vegOnly": false,
+            "Cost": "low",
+            "cusineTypes": '["south indian","north indian","chinese","italian","french"]',
+            "isOpen": true
+        },
+        {
+            "Restaurant_id": uuid.v1(),
+            "Restaurant_name": "SaiPrasad ",
+            "Address": "Andheri",
+            "vegOnly": true,
+            "Cost": "low",
+            "cusineTypes": '["south indian","north indian","chinese","italian","french"]',
+            "isOpen": true
+        },
+        {
+           "Restaurant_id": uuid.v1(),
+            "Restaurant_name": "Hotel Taj",
+            "Address": "bandra",
+            "vegOnly": true,
+            "Cost": "high",
+            "cusineTypes": '["italian","french","panjabi","north indian"]',
+            "isOpen": true
+        },
+        {
+           "Restaurant_id": uuid.v1(),
+            "Restaurant_name": "Hotel Panjab",
+            "Address": "mahim",
+            "vegOnly": true,
+            "Cost": "low",
+            "cusineTypes": '["french","panjabi","kashmiri"]',
+            "isOpen": false
+        },
+        {
+          "Restaurant_id": uuid.v1(),
+            "Restaurant_name": "Hotel Bluestar",
+            "Address": "Navi Mumbai",
+            "vegOnly": true,
+            "Cost": "low",
+            "cusineTypes": '["panjabi","south indian","italian"]',
+            "isOpen": true
+        },
+        {
+            "Restaurant_id": uuid.v1(),
+            "Restaurant_name": "Hotel Avenue",
+            "Address": "Borivali",
+            "vegOnly": true,
+            "Cost": "medium",
+            "cusineTypes": '["south indian","north indian","chinese","italian","french"]',
+            "isOpen": true
+        },
+        {
+            "Restaurant_id": uuid.v1(),
+            "Restaurant_name": "Hotel Baba",
+            "Address": "Dadar",
+            "vegOnly": true,
+            "Cost": "high",
+            "cusineTypes": '["italian","french","panjabi","french"]',
+            "isOpen": true
+        },
+        {
+            "Restaurant_id": uuid.v1(),
+            "Restaurant_name": "Hotel MK Regency",
+            "Address": "Vashi",
+            "vegOnly": true,
+            "Cost": "low",
+            "cusineTypes": '["panjabi","south indian"]',
+            "isOpen": true
+        },
+        {
+            "Restaurant_id": uuid.v1(),
+            "Restaurant_name": "Hotel JW Mariot",
+            "Address": "Andheri",
+            "vegOnly": true,
+            "Cost": "high",
+            "cusineTypes": '["south indian","north indian","chinese","italian","french"]',
+            "isOpen": true
+        },
+        {
+            "Restaurant_id": uuid.v1(),
+            "Restaurant_name": "Hotel JK Regency",
+            "Address": "mahim",
+            "vegOnly": true,
+            "Cost": "low",
+            "cusineTypes": '["french","thai"]',
+            "isOpen": false
+        }
+    ]
+    for (let index = 0; index < rawdata.length; index++) {
+        let resp = restro_table.build(rawdata[index]);
+        await resp.save();
+        
+    };
+}
 
 module.exports.postData_restro = async function (obj) {
     try {
